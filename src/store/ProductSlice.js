@@ -9,18 +9,26 @@ import {
 
 const INITIAL_DATA = {
   status: 'idle',
+  page: 0,
   error: '',
   message: '',
   product: [],
+  showProduct: [],
 };
 
 const ProductSlide = createSlice({
   name: 'product',
   initialState: INITIAL_DATA,
   reducers: {
-    resetStatus(state) {
-      state.status = 'idle';
+    resetError(state) {
       state.error = '';
+      state.message = '';
+    },
+    changePage(state, action) {
+      state.page = action.payload;
+    },
+    addShowProduct(state, action) {
+      state.showProduct = action.payload;
     },
   },
   extraReducers(builder) {
@@ -29,8 +37,10 @@ const ProductSlide = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchProduct.fulfilled, (state, action) => {
+        console.log(action);
         state.status = 'succeeded';
-        state.product = action.payload;
+        state.product = action.payload.product;
+        state.showProduct = action.payload.product;
       })
       .addCase(fetchProduct.rejected, (state, action) => {
         state.status = 'failed';

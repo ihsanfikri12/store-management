@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+
 import { addNewProduct, editProduct } from '../../store/ProductActionThunk';
 
 const Form = (props) => {
@@ -16,7 +17,7 @@ const Form = (props) => {
   const onSubmitForm = (e) => {
     e.preventDefault();
 
-    const namaBarang = namaBarangRef.current.value;
+    const namaBarang = namaBarangRef.current.value.toLowerCase();
     const hargaJual = hargaJualRef.current.value;
     const hargaBeli = hargaBeliRef.current.value;
     const stok = stokRef.current.value;

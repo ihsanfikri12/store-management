@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Home from './components/Home/Home';
-import Modal from './components/UI/Modal';
-import supabase from './supabase/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct } from './store/ProductActionThunk';
 

@@ -1,17 +1,20 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, nanoid } from '@reduxjs/toolkit';
 import supabase from '../supabase/api';
 
 export const fetchProduct = createAsyncThunk(
   'product/fetchProduct',
   async (_, { rejectWithValue }) => {
     try {
-      let { data: product, error } = await supabase.from('product').select('*');
+      let { data: product, error } = await supabase
+        .from('product')
+        .select('*')
+        .order('id', { ascending: false });
 
       if (error) {
         return rejectWithValue(error.message);
       }
 
-      return product;
+      return { product };
     } catch (error) {
       throw rejectWithValue(error.message);
     }
@@ -22,9 +25,13 @@ export const addNewProduct = createAsyncThunk(
   'product/addNewProduct',
   async (initialProduct, { rejectWithValue }) => {
     try {
+      const namaFoto = initialProduct.fotoUrl.name
+        .split('.')
+        .join(`-${nanoid()}`);
+
       const { data: fotoUrl, error: errorUpload } = await supabase.storage
         .from('fotoBarang')
-        .upload(`foto/${initialProduct.fotoUrl.name}`, initialProduct.fotoUrl);
+        .upload(`foto/${namaFoto}`, initialProduct.fotoUrl);
 
       if (errorUpload) {
         return rejectWithValue(errorUpload.message);

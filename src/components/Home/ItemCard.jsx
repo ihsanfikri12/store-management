@@ -1,40 +1,43 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import supabase from '../../supabase/api';
+import { ProductAction } from '../../store/ProductSlice';
+
 import DeleteItem from './DeleteItem';
 import Modal from '../UI/Modal';
 import Form from './Form';
-import { ProductAction } from '../../store/ProductSlice';
-import { useDispatch } from 'react-redux';
-import supabase from '../../supabase/api';
 
 const ItemCard = ({ data }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-
   const [image, setImage] = useState('');
-
-  const imageProduct = async () => {
-    const { data: foto, error } = await supabase.storage
-      .from('fotoBarang')
-      .getPublicUrl(data.fotoUrl);
-
-    setImage(foto.publicUrl);
-  };
-
-  useEffect(() => {
-    imageProduct();
-  }, [data]);
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const imageProduct = async () => {
+      const { data: foto, error } = await supabase.storage
+        .from('fotoBarang')
+        .getPublicUrl(data.fotoUrl);
+
+      setImage(foto.publicUrl);
+    };
+
+    imageProduct();
+  }, [data]);
+
   const onDeleteItem = () => {
     setDeleteModal((value) => !value);
-    dispatch(ProductAction.resetStatus());
+    dispatch(ProductAction.resetError());
   };
 
   const onEditHandler = () => {
     setModalVisible((value) => !value);
-    dispatch(ProductAction.resetStatus());
+    dispatch(ProductAction.resetError());
   };
+
+  const namaBarang =
+    data.namaBarang[0].toUpperCase() + data.namaBarang.slice(1);
 
   return (
     <div className="max-w-md rounded-lg overflow-hidden shadow-lg ">
@@ -55,7 +58,7 @@ const ItemCard = ({ data }) => {
       />
       <div className="bg-white p-4">
         <div className="flex justify-between">
-          <h3 className="text-xl font-semibold">{data.namaBarang}</h3>
+          <h3 className="text-xl font-semibold">{namaBarang}</h3>
           <p className="text-xl font-bold text-orange-500">${data.hargaBeli}</p>
         </div>
         <div className="flex justify-between mt-5">
